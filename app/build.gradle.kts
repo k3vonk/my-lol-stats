@@ -1,9 +1,12 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
+
 plugins {
-    kotlin("jvm") version "1.9.22"
-    kotlin("plugin.spring") version "1.9.22"
-    kotlin("kapt") version "1.9.22"
+    val kotlinVersion = "1.9.22"
+    kotlin("jvm") version kotlinVersion
+    kotlin("plugin.spring") version kotlinVersion
+    kotlin("kapt") version kotlinVersion
+    kotlin("plugin.serialization") version kotlinVersion
 
     id("org.springframework.boot") version "3.2.3"
     id("io.spring.dependency-management") version "1.1.4"
@@ -24,6 +27,8 @@ dependencies {
     // helps annotate configuration properties
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
     kapt("org.springframework.boot:spring-boot-configuration-processor")
+
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3")
 
     implementation(kotlin("reflect"))
     testImplementation("org.springframework.boot:spring-boot-starter-test")
