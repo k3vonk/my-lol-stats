@@ -19,3 +19,14 @@ RIOT_APIKEY="Your development API key"
 ```bash
  curl -X GET --location "http://localhost:8080/summoner/YakumoUchiha/EUW"
 ```
+
+## TODO
+
+- Filter out Aram/Ranked/Normals matches
+- Get champion played count
+- Match up comparisons
+- Default summoner?
+- Generate OpenAPI spec
+- Validate API spec
+- Do some data storage? so we prevent long listed API calls
+- Visualization?
