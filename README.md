@@ -17,5 +17,5 @@ RIOT_APIKEY="Your development API key"
 ## Sample endpoint execution
 
 ```bash
- curl -X GET --location "http://localhost:8080/summoner/summoner/YakumoUchiha/EUW"
+ curl -X GET --location "http://localhost:8080/summoner/YakumoUchiha/EUW"
 ```
