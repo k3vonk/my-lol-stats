@@ -1,27 +1,32 @@
-plugins {
-    // Apply the org.jetbrains.kotlin.jvm Plugin to add support for Kotlin.
-    kotlin("jvm") version "1.9.20"
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
-    // Apply the application plugin to add support for building a CLI application in Java.
-    application
+plugins {
+    kotlin("jvm") version "1.9.22"
+    kotlin("plugin.spring") version "1.9.22"
+
+    id("org.springframework.boot") version "3.2.3"
+    id("io.spring.dependency-management") version "1.1.4"
 }
 
 repositories {
-    // Use Maven Central for resolving dependencies.
     mavenCentral()
 }
 
 dependencies {
     // This dependency is used by the application.
     implementation(libs.guava)
+
+    testImplementation("org.springframework.boot:spring-boot-starter-test")
 }
 
-testing {
-    suites {
-        // Configure the built-in test suite
-        val test by getting(JvmTestSuite::class) {
-            // Use Kotlin Test test framework
-            useKotlinTest("1.9.20")
+tasks {
+    withType<Test> {
+        useJUnitPlatform()
+    }
+
+    withType<KotlinCompile> {
+        kotlinOptions {
+            freeCompilerArgs += "-Xjsr305=strict"
         }
     }
 }
@@ -31,9 +36,4 @@ java {
     toolchain {
         languageVersion.set(JavaLanguageVersion.of(21))
     }
-}
-
-application {
-    // Define the main class for the application.
-    mainClass.set("com.gajyoung.AppKt")
 }
