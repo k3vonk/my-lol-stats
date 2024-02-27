@@ -2,16 +2,29 @@ package com.gajyoung.riot.api
 
 import com.gajyoung.domain.SummonerService
 import com.gajyoung.riot.api.query.MatchQueryParameters
+import com.gajyoung.riot.dto.Match
 import org.springframework.core.ParameterizedTypeReference
 import org.springframework.stereotype.Service
 import org.springframework.web.reactive.function.client.WebClient
 import org.springframework.web.util.UriBuilder
+import reactor.core.publisher.Mono
 
 @Service
 class MatchService(
     val europeApiWebClient: WebClient,
     val summonerService: SummonerService,
 ) {
+
+    // TODO: this is only for testing
+    fun getFirstMatch(matchQueryParameters: MatchQueryParameters) =
+        getMatches(matchQueryParameters)
+            .flatMap { Mono.just(it.first()) }
+            .flatMap { matchId ->
+                europeApiWebClient.get()
+                    .uri("/lol/match/v5/matches/$matchId")
+                    .retrieve()
+                    .bodyToMono(Match::class.java)
+            }
 
     // TODO what if getSummoner is null?
     fun getMatches(matchQueryParameters: MatchQueryParameters) =

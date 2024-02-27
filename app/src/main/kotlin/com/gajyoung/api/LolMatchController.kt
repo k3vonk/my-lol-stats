@@ -11,4 +11,8 @@ class LolMatchController(private val matchService: MatchService) {
     @GetMapping
     fun getMatches(@ModelAttribute matchQueryParameters: MatchQueryParameters) =
         matchService.getMatches(matchQueryParameters)
+
+    @GetMapping("/first")
+    fun getFirstMatch(@ModelAttribute matchQueryParameters: MatchQueryParameters) =
+        matchService.getFirstMatch(matchQueryParameters)
 }
