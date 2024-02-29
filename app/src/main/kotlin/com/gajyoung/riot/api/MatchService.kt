@@ -1,6 +1,6 @@
 package com.gajyoung.riot.api
 
-import com.gajyoung.domain.SummonerService
+import com.gajyoung.domain.AccountService
 import com.gajyoung.riot.api.query.MatchQueryParameters
 import com.gajyoung.riot.dto.Match
 import org.springframework.core.ParameterizedTypeReference
@@ -12,7 +12,7 @@ import reactor.core.publisher.Mono
 @Service
 class MatchService(
     val europeApiWebClient: WebClient,
-    val summonerService: SummonerService,
+    val summonerService: AccountService,
 ) {
 
     // TODO: this is only for testing
@@ -30,7 +30,7 @@ class MatchService(
     fun getMatches(matchQueryParameters: MatchQueryParameters) =
         europeApiWebClient.get()
             .uri {
-                it.path("/lol/match/v5/matches/by-puuid/${summonerService.getSummoner()?.puuid}/ids")
+                it.path("/lol/match/v5/matches/by-puuid/${summonerService.getAccount()?.puuid}/ids")
                     .setMatchQueryParameters(matchQueryParameters)
                     .build()
             }
