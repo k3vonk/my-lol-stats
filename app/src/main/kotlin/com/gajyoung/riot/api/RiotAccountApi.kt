@@ -5,7 +5,7 @@ import org.springframework.stereotype.Service
 import org.springframework.web.reactive.function.client.WebClient
 
 @Service
-class RiotAccountService(private val europeApiWebClient: WebClient) {
+class RiotAccountApi(private val europeApiWebClient: WebClient) {
 
     fun getAccount(gameName: String, tagLine: String) =
         europeApiWebClient.get()
