@@ -1,0 +1,14 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15.6
+    container_name: lol_container
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: lol_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - ../lol_data:/var/lib/pgsql/data/pgdata
