@@ -1,2 +1,6 @@
+spring:
+  datasource:
+    driver-class-name: org.postgresql.Driver
+
 riot:
   apiKey: "Add your development key"

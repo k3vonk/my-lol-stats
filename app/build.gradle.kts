@@ -23,6 +23,10 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-webflux") // service's public API
     implementation("org.springframework.boot:spring-boot-starter-actuator")
 
+    // database
+    implementation("org.springframework.boot:spring-boot-starter-jooq")
+    implementation("org.postgresql:postgresql")
+
     // helps annotate configuration properties
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
     kapt("org.springframework.boot:spring-boot-configuration-processor")
