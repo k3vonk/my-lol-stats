@@ -17,8 +17,7 @@ repositories {
 }
 
 dependencies {
-    // This dependency is used by the application.
-    implementation(libs.guava)
+    developmentOnly("org.springframework.boot:spring-boot-docker-compose")
 
     implementation("org.springframework.boot:spring-boot-starter-web") // communicate with Riot API
     implementation("org.springframework.boot:spring-boot-starter-webflux") // service's public API
@@ -31,6 +30,7 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3")
 
     implementation(kotlin("reflect"))
+
     testImplementation("org.springframework.boot:spring-boot-starter-test")
 }
 
