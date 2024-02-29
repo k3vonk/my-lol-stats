@@ -4,3 +4,10 @@ spring:
 
 riot:
   apiKey: "Add your development key"
+
+# Remove Jooq Advert
+logging:
+  level:
+    org:
+      jooq:
+        Constants: off

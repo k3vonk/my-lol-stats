@@ -1,6 +1,6 @@
 package com.gajyoung.api
 
-import com.gajyoung.riot.api.MatchService
+import com.gajyoung.domain.MatchService
 import com.gajyoung.riot.api.query.MatchQueryParameters
 import org.springframework.web.bind.annotation.*
 

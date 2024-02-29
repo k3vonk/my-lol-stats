@@ -1,6 +1,5 @@
-package com.gajyoung.riot.api
+package com.gajyoung.domain
 
-import com.gajyoung.domain.AccountService
 import com.gajyoung.riot.api.query.MatchQueryParameters
 import com.gajyoung.riot.dto.Match
 import org.springframework.core.ParameterizedTypeReference
@@ -12,7 +11,7 @@ import reactor.core.publisher.Mono
 @Service
 class MatchService(
     val europeApiWebClient: WebClient,
-    val summonerService: AccountService,
+    val accountService: AccountService,
 ) {
 
     // TODO: this is only for testing
@@ -20,22 +19,38 @@ class MatchService(
         getMatches(matchQueryParameters)
             .flatMap { Mono.just(it.first()) }
             .flatMap { matchId ->
-                europeApiWebClient.get()
-                    .uri("/lol/match/v5/matches/$matchId")
-                    .retrieve()
-                    .bodyToMono(Match::class.java)
+                getMatch(matchId)
             }
 
     // TODO what if getSummoner is null?
-    fun getMatches(matchQueryParameters: MatchQueryParameters) =
-        europeApiWebClient.get()
-            .uri {
-                it.path("/lol/match/v5/matches/by-puuid/${summonerService.getAccount()?.puuid}/ids")
-                    .setMatchQueryParameters(matchQueryParameters)
-                    .build()
-            }
+    fun getMatches(matchQueryParameters: MatchQueryParameters): Mono<List<String>> {
+        val matches = europeApiWebClient.get()
+            .uri { it.buildMatchUri(matchQueryParameters) }
             .retrieve()
             .bodyToMono(object : ParameterizedTypeReference<List<String>>() {})
+
+        matches
+            .flatMapIterable { matchIds -> matchIds } // converts Mono<List<String>> to Flux<String>
+            .flatMap {
+                getMatch(it).also {
+                    // TODO
+                }
+            }
+
+        return matches
+    }
+
+    private fun getMatch(matchId: String) =
+        europeApiWebClient.get()
+            .uri("/lol/match/v5/matches/$matchId")
+            .retrieve()
+            .bodyToMono(Match::class.java)
+
+    private fun UriBuilder.buildMatchUri(
+        matchQueryParameters: MatchQueryParameters
+    ) = path("/lol/match/v5/matches/by-puuid/${accountService.getAccount()?.puuid}/ids")
+        .setMatchQueryParameters(matchQueryParameters)
+        .build()
 
     fun UriBuilder.setMatchQueryParameters(matchQueryParameters: MatchQueryParameters) = apply {
         matchQueryParameters.startTime?.let { queryParam("startTime", it) }
