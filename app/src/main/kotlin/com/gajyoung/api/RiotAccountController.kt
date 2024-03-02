@@ -13,8 +13,8 @@ class RiotAccountController(
 ) {
 
     @GetMapping("/{gameName}/{tagLine}")
-    fun getSummoner(
+    fun getAccount(
         @PathVariable gameName: String,
         @PathVariable tagLine: String
-    ) = accountService.getAccount(gameName, tagLine) ?: accountService.fetchAndSetAccount(gameName, tagLine)
+    ) = accountService.fetchAccount(gameName, tagLine)
 }

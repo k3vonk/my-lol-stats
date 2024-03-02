@@ -23,6 +23,7 @@ repositories {
 
 dependencies {
     developmentOnly("org.springframework.boot:spring-boot-docker-compose")
+    developmentOnly("org.springframework.boot:spring-boot-devtools")
 
     implementation("org.springframework.boot:spring-boot-starter-web") // communicate with Riot API
     implementation("org.springframework.boot:spring-boot-starter-webflux") // service's public API
