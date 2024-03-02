@@ -3,6 +3,7 @@ package com.gajyoung.domain
 import com.gajyoung.repository.MatchRepository
 import com.gajyoung.riot.api.query.MatchQueryParameters
 import com.gajyoung.riot.dto.Match
+import org.slf4j.LoggerFactory
 import org.springframework.core.ParameterizedTypeReference
 import org.springframework.stereotype.Service
 import org.springframework.web.reactive.function.client.WebClient
@@ -17,6 +18,7 @@ class MatchService(
     val accountService: AccountService,
     val matchRepository: MatchRepository,
 ) {
+    private val logger = LoggerFactory.getLogger(javaClass)
 
     // TODO: this is only for testing
     fun getFirstMatch(matchQueryParameters: MatchQueryParameters) =
@@ -27,6 +29,7 @@ class MatchService(
             }
 
     // TODO what if getSummoner is null?
+    // TODO: make it run less
     fun getMatches(matchQueryParameters: MatchQueryParameters): Mono<MutableList<String>> {
         val matches = europeApiWebClient.get()
             .uri { it.buildMatchUri(matchQueryParameters) }
@@ -34,10 +37,23 @@ class MatchService(
             .bodyToMono(object : ParameterizedTypeReference<List<String>>() {})
             .flatMapMany { Flux.fromIterable(it) }
             .collectList()
-            .publishOn(Schedulers.boundedElastic())
-            .doOnNext { matches ->
-                matchRepository.insertMatches(matches, accountService.getAccount().puuid)
-            }
+            .flatMap { matches ->
+                Flux.fromIterable(matches)
+                    .publishOn(Schedulers.boundedElastic())
+                    .filter { matchId -> !matchRepository.isMatchInTable(matchId) }
+                    .publishOn(Schedulers.boundedElastic())
+                    .flatMap { matchId ->
+                        logger.info("Inserting match: $matchId")
+                        getMatch(matchId)
+                            .publishOn(Schedulers.boundedElastic())
+                            .doOnNext {
+                                matchRepository.insertMatch(matchId, accountService.getAccount().puuid, it)
+                                logger.info(it.toString())
+                            }
+                            .thenReturn(matchId)
+                    }
+                    .collectList()
+        }
 
         return matches
     }
