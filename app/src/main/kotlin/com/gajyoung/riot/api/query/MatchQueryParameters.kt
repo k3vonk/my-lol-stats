@@ -14,5 +14,5 @@ data class MatchQueryParameters(
     val queue: Int? = null,
     val type: String? = null,
     val start: Int = 0,
-    val count: Int = 20,
+    val count: Int = 5, // we might get rate limited at higher values
 )

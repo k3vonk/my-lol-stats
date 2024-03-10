@@ -1,9 +1,15 @@
 package com.gajyoung.repository
 
+import com.gajyoung.riot.dto.Info
 import com.gajyoung.riot.dto.Match
+import com.gajyoung.riot.dto.Metadata
+import com.gajyoung.riot.dto.Participant
 import org.jooq.DSLContext
-import org.jooq.generated.Tables.MATCHES
+import org.jooq.generated.Tables.*
+import org.jooq.generated.tables.records.InfoRecord
 import org.jooq.generated.tables.records.MatchesRecord
+import org.jooq.generated.tables.records.MetadataRecord
+import org.jooq.generated.tables.records.ParticipantRecord
 import org.springframework.stereotype.Repository
 import org.springframework.transaction.annotation.Transactional
 
@@ -28,7 +34,16 @@ class MatchRepository(private val dslContext: DSLContext) {
             .set(matchId.toMatchRecord(puuid))
             .execute()
 
-        // TODO: insert more data
+        dslContext.insertInto(METADATA)
+            .set(match.metadata.toRecord())
+            .execute()
+
+        dslContext.insertInto(INFO)
+            .set(match.info.toRecord(matchId))
+            .execute()
+
+        dslContext.batchInsert(match.info.participants.map { it.toRecord(matchId) })
+            .execute()
     }
 
     fun List<String>.toMatchRecords(puuid: String) =
@@ -36,4 +51,44 @@ class MatchRepository(private val dslContext: DSLContext) {
 
     fun String.toMatchRecord(puuid: String) =
         MatchesRecord(this, puuid)
+
+    fun Metadata.toRecord() =
+        MetadataRecord(
+            matchId,
+            dataVersion,
+            participants.toTypedArray()
+        )
+
+    fun Info.toRecord(matchId: String) =
+        InfoRecord(
+            matchId,
+            gameId,
+            mapId,
+            queueId,
+            platformId,
+            gameCreation,
+            gameDuration,
+            gameEndTimestamp,
+            gameStartTimestamp,
+            gameMode,
+            gameName,
+            gameType,
+            gameVersion
+        )
+
+    fun Participant.toRecord(matchId: String) =
+        ParticipantRecord(
+            matchId,
+            puuid,
+            participantId,
+            championId,
+            championName,
+            individualPosition,
+            role,
+            summonerId,
+            summonerName,
+            teamId,
+            teamPosition,
+            timePlayed
+        )
 }
