@@ -3,7 +3,7 @@ package com.gajyoung.domain
 import com.gajyoung.repository.RiotAccountRepository
 import com.gajyoung.riot.api.RiotAccountApi
 import com.gajyoung.riot.dto.Account
-import org.jooq.generated.tables.records.RiotAccountsRecord
+import org.jooq.generated.tables.records.RiotaccountRecord
 import org.slf4j.LoggerFactory
 import org.springframework.boot.context.event.ApplicationReadyEvent
 import org.springframework.context.ApplicationListener
@@ -53,7 +53,7 @@ class AccountService(
                 }
     }
 
-    private fun Account.toRiotAccountRecord() = RiotAccountsRecord()
+    private fun Account.toRiotAccountRecord() = RiotaccountRecord()
         .also {
             it.puuid = puuid
             it.gameName = gameName

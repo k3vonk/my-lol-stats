@@ -7,7 +7,7 @@ import com.gajyoung.riot.dto.Participant
 import org.jooq.DSLContext
 import org.jooq.generated.Tables.*
 import org.jooq.generated.tables.records.InfoRecord
-import org.jooq.generated.tables.records.MatchesRecord
+import org.jooq.generated.tables.records.MatchRecord
 import org.jooq.generated.tables.records.MetadataRecord
 import org.jooq.generated.tables.records.ParticipantRecord
 import org.springframework.stereotype.Repository
@@ -18,8 +18,8 @@ import org.springframework.transaction.annotation.Transactional
 class MatchRepository(private val dslContext: DSLContext) {
 
     fun isMatchInTable(matchId: String) =
-        dslContext.selectFrom(MATCHES)
-            .where(MATCHES.MATCH_ID.eq(matchId))
+        dslContext.selectFrom(MATCH)
+            .where(MATCH.MATCH_ID.eq(matchId))
             .fetch()
             .isNotEmpty
 
@@ -30,7 +30,7 @@ class MatchRepository(private val dslContext: DSLContext) {
     }
 
     fun insertMatch(matchId: String, puuid: String, match: Match) {
-        dslContext.insertInto(MATCHES)
+        dslContext.insertInto(MATCH)
             .set(matchId.toMatchRecord(puuid))
             .execute()
 
@@ -47,10 +47,10 @@ class MatchRepository(private val dslContext: DSLContext) {
     }
 
     fun List<String>.toMatchRecords(puuid: String) =
-        map { MatchesRecord(it, puuid) }
+        map { MatchRecord(it, puuid) }
 
     fun String.toMatchRecord(puuid: String) =
-        MatchesRecord(this, puuid)
+        MatchRecord(this, puuid)
 
     fun Metadata.toRecord() =
         MetadataRecord(
