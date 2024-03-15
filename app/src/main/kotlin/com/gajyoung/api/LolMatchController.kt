@@ -21,11 +21,6 @@ class LolMatchController(
         @ModelAttribute matchQueryParameters: MatchQueryParameters,
     ) = matchService.getMatches(matchQueryParameters)
 
-    @GetMapping("/first")
-    fun getFirstMatch(
-        @ModelAttribute matchQueryParameters: MatchQueryParameters,
-    ) = matchService.getFirstMatch(matchQueryParameters)
-
     @GetMapping("/test")
     fun getMatchIds(
         @RequestParam queryParameters: MultiValueMap<String, String>,
@@ -33,4 +28,7 @@ class LolMatchController(
         "xFpq6Dx5JZ7gtS5g-_aw9hZRCNF6S6QnMO-PU64YpCKP93nACZPrtiG1R3aejrLLtsIVVF2201vXxw",
         queryParameters,
     )
+
+    @GetMapping("/test/first")
+    fun getMatch() = leagueMatchApi.getMatch("EUW1_6856461913")
 }

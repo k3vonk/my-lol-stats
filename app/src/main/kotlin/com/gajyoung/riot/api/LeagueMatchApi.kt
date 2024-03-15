@@ -1,6 +1,7 @@
 package com.gajyoung.riot.api
 
 import com.gajyoung.riot.api.query.MatchQueryParameters
+import com.gajyoung.riot.dto.Match
 import org.springframework.core.ParameterizedTypeReference
 import org.springframework.stereotype.Service
 import org.springframework.util.MultiValueMap
@@ -12,6 +13,13 @@ import reactor.core.publisher.Mono
 class LeagueMatchApi(
     private val europeApiWebClient: WebClient,
 ) {
+    fun getMatch(matchId: String): Mono<Match> {
+        return europeApiWebClient.get()
+            .uri("$LOL_MATCH_URL/$matchId")
+            .retrieve()
+            .bodyToMono(Match::class.java)
+    }
+
     fun getMatchIds(
         puuid: String,
         queryParameters: MultiValueMap<String, String>,
@@ -25,7 +33,7 @@ class LeagueMatchApi(
     private fun UriBuilder.setMatchQueryParameters(
         puuid: String,
         queryParameters: MultiValueMap<String, String>,
-    ) = path("/lol/match/v5/matches/by-puuid/$puuid/ids")
+    ) = path("$LOL_MATCH_URL/by-puuid/$puuid/ids")
         .queryParams(queryParameters.addMatchQueryParameters())
         .build()
 
@@ -39,5 +47,9 @@ class LeagueMatchApi(
             addIfAbsent("count", count.toString())
         }
         return this
+    }
+
+    companion object {
+        private const val LOL_MATCH_URL = "lol/match/v5/matches"
     }
 }
