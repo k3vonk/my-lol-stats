@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
-@RequestMapping("/lol/match")
+@RequestMapping("/api/vi/lol/match")
 class LolMatchController(
     private val matchService: MatchService,
     private val leagueMatchApi: LeagueMatchApi,

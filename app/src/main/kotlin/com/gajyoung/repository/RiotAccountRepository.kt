@@ -1,20 +1,21 @@
 package com.gajyoung.repository
 
+import com.gajyoung.riot.dto.Account
 import org.jooq.DSLContext
 import org.jooq.generated.Tables.RIOTACCOUNT
-import org.jooq.generated.tables.records.RiotaccountRecord
 import org.springframework.stereotype.Repository
 import org.springframework.transaction.annotation.Transactional
 
 @Repository
 @Transactional
 class RiotAccountRepository(private val dslContext: DSLContext) {
-    fun saveRiotAccount(riotAccountsRecord: RiotaccountRecord) {
+    fun saveRiotAccount(account: Account) {
+        val riotAccount = dslContext.newRecord(RIOTACCOUNT, account)
         dslContext
             .insertInto(RIOTACCOUNT)
-            .set(riotAccountsRecord)
+            .set(riotAccount)
             .onDuplicateKeyUpdate()
-            .set(RIOTACCOUNT.GAME_NAME, riotAccountsRecord.gameName)
+            .set(RIOTACCOUNT.GAME_NAME, riotAccount.gameName)
             .execute()
     }
 }
