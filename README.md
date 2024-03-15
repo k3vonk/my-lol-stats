@@ -23,6 +23,7 @@ RIOT_APIKEY="Your development API key"
 ## TODO
 
 - Filter out Aram/Ranked/Normals matches
+- Response status support for different issues
 - Get champion played count
 - Match up comparisons
 - Default summoner?

@@ -8,6 +8,8 @@ import org.springframework.util.MultiValueMap
 import org.springframework.web.reactive.function.client.WebClient
 import org.springframework.web.util.UriBuilder
 import reactor.core.publisher.Mono
+import reactor.util.retry.Retry
+import java.time.Duration
 
 @Service
 class LeagueMatchApi(
@@ -18,6 +20,7 @@ class LeagueMatchApi(
             .uri("$LOL_MATCH_URL/$matchId")
             .retrieve()
             .bodyToMono(Match::class.java)
+            .retryWhen(Retry.backoff(3, Duration.ofSeconds(2)))
     }
 
     fun getMatchIds(

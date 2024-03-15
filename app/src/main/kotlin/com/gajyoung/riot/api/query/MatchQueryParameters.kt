@@ -2,7 +2,7 @@ package com.gajyoung.riot.api.query
 
 /**
  * @param startTime Epoch timestamp in seconds. The matchlist started storing timestamps on June 16th, 2021. Any matches played before June 16th, 2021 won't be included in the results if the startTime filter is set.
- * @param endTime Epoch timestamp in seconds
+ * @param endTime Default 2024-01-01. Epoch timestamp in seconds
  * @param queue Filter the list of match ids by a specific queue id. This filter is mutually inclusive of the type filter meaning any match ids returned must match both the queue and type filters.
  * @param type Filter the list of match ids by the type of match. This filter is mutually inclusive of the queue filter meaning any match ids returned must match both the queue and type filters.
  * @param start Defaults to 0. Start index.
@@ -10,9 +10,9 @@ package com.gajyoung.riot.api.query
  */
 data class MatchQueryParameters(
     val startTime: Long? = null,
-    val endTime: Long? = null,
+    val endTime: Long? = 1704067200,
     val queue: Int? = null,
     val type: String? = null,
     val start: Int = 0,
-    val count: Int = 5,
+    val count: Int = 20,
 )
