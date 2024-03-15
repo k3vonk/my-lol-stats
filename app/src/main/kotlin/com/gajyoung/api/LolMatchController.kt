@@ -2,10 +2,8 @@ package com.gajyoung.api
 
 import com.gajyoung.domain.MatchService
 import com.gajyoung.riot.api.LeagueMatchApi
-import com.gajyoung.riot.api.query.MatchQueryParameters
 import org.springframework.util.MultiValueMap
 import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.ModelAttribute
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
@@ -18,8 +16,8 @@ class LolMatchController(
 ) {
     @GetMapping
     fun getMatches(
-        @ModelAttribute matchQueryParameters: MatchQueryParameters,
-    ) = matchService.getMatches(matchQueryParameters)
+        @RequestParam queryParameters: MultiValueMap<String, String>,
+    ) = matchService.getMatches(queryParameters)
 
     @GetMapping("/test")
     fun getMatchIds(

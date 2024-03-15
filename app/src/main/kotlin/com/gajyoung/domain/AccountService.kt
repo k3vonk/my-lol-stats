@@ -25,7 +25,7 @@ class AccountService(
         currentAccount = account
     }
 
-    fun getAccount() = currentAccount
+    fun getPuiid() = currentAccount.puuid
 
     override fun onApplicationEvent(event: ApplicationReadyEvent) {
         fetchAndSetAccount(DEFAULT_GAME_NAME, DEFAULT_TAG_LINE)
