@@ -14,26 +14,24 @@ import org.springframework.web.reactive.function.client.WebClient
  */
 @Configuration
 class RiotWebClientConfiguration(val riotProperties: RiotProperties) {
+    @Bean
+    fun europeApiWebClient(): WebClient = generateRiotWebClient(EUROPE_URL)
 
     @Bean
-    fun europeApiWebClient(): WebClient =
-        generateRiotWebClient(EUROPE_URL)
+    fun euw1ApiWebClient(): WebClient = generateRiotWebClient(EUW1_URL)
 
-    @Bean
-    fun euw1ApiWebClient(): WebClient =
-        generateRiotWebClient(EUW1_URL)
-
-    private fun generateRiotWebClient(baseUrl: String) = WebClient.builder()
-        .baseUrl(baseUrl)
-        .defaultHeader(X_RIOT_TOKEN, riotProperties.apiKey)
-        .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-        .codecs { it.kotlinSerializationJsonDecoderSetup() }
-        .build()
+    private fun generateRiotWebClient(baseUrl: String) =
+        WebClient.builder()
+            .baseUrl(baseUrl)
+            .defaultHeader(X_RIOT_TOKEN, riotProperties.apiKey)
+            .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+            .codecs { it.kotlinSerializationJsonDecoderSetup() }
+            .build()
 
     private fun ClientCodecConfigurer.kotlinSerializationJsonDecoderSetup() =
         defaultCodecs()
             .kotlinSerializationJsonDecoder(
-                KotlinSerializationJsonDecoder(Json { ignoreUnknownKeys = true })
+                KotlinSerializationJsonDecoder(Json { ignoreUnknownKeys = true }),
             )
 
     companion object {

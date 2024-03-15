@@ -13,6 +13,8 @@ plugins {
 
     id("dev.monosoul.jooq-docker") version "6.0.13"
 
+    id("org.jlleitschuh.gradle.ktlint") version "12.1.0"
+
     id("org.springframework.boot") version "3.2.3"
     id("io.spring.dependency-management") version "1.1.4"
 }

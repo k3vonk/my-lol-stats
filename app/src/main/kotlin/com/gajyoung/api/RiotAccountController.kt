@@ -9,12 +9,11 @@ import org.springframework.web.bind.annotation.RestController
 @RestController
 @RequestMapping("/account")
 class RiotAccountController(
-    private val accountService: AccountService
+    private val accountService: AccountService,
 ) {
-
     @GetMapping("/{gameName}/{tagLine}")
     fun getAccount(
         @PathVariable gameName: String,
-        @PathVariable tagLine: String
+        @PathVariable tagLine: String,
     ) = accountService.fetchAccount(gameName, tagLine)
 }

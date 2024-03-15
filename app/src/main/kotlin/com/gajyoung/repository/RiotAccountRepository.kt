@@ -9,7 +9,6 @@ import org.springframework.transaction.annotation.Transactional
 @Repository
 @Transactional
 class RiotAccountRepository(private val dslContext: DSLContext) {
-
     fun saveRiotAccount(riotAccountsRecord: RiotaccountRecord) {
         dslContext
             .insertInto(RIOTACCOUNT)

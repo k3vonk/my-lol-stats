@@ -16,7 +16,7 @@ import org.springframework.stereotype.Service
 class AccountService(
     private val riotAccountApi: RiotAccountApi,
     private val riotAccountRepository: RiotAccountRepository,
-) : ApplicationListener<ApplicationReadyEvent>{
+) : ApplicationListener<ApplicationReadyEvent> {
     companion object {
         private const val DEFAULT_GAME_NAME = "YakumoUchiha"
         private const val DEFAULT_TAG_LINE = "EUW"
@@ -40,23 +40,27 @@ class AccountService(
     }
 
     // TODO: Throw exception when fetch returns null & do I need to block?
-    fun fetchAccount(gameName: String, tagLine: String): Account? {
+    fun fetchAccount(
+        gameName: String,
+        tagLine: String,
+    ): Account? {
         currentAccount
             .takeIf { it.gameName == gameName && it.tagLine == tagLine }
             ?.let { return it }
 
         return riotAccountApi.getAccountByRiotId(gameName, tagLine)
-                .block()
-                ?.also {
-                    riotAccountRepository.saveRiotAccount(it.toRiotAccountRecord())
-                    setAccount(it)
-                }
+            .block()
+            ?.also {
+                riotAccountRepository.saveRiotAccount(it.toRiotAccountRecord())
+                setAccount(it)
+            }
     }
 
-    private fun Account.toRiotAccountRecord() = RiotaccountRecord()
-        .also {
-            it.puuid = puuid
-            it.gameName = gameName
-            it.tagLine = tagLine
-        }
+    private fun Account.toRiotAccountRecord() =
+        RiotaccountRecord()
+            .also {
+                it.puuid = puuid
+                it.gameName = gameName
+                it.tagLine = tagLine
+            }
 }

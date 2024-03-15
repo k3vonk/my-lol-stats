@@ -31,29 +31,30 @@ class MatchService(
     // TODO what if getSummoner is null?
     // TODO: make it run less
     fun getMatches(matchQueryParameters: MatchQueryParameters): Mono<MutableList<String>> {
-        val matches = europeApiWebClient.get()
-            .uri { it.buildMatchUri(matchQueryParameters) }
-            .retrieve()
-            .bodyToMono(object : ParameterizedTypeReference<List<String>>() {})
-            .flatMapMany { Flux.fromIterable(it) }
-            .collectList()
-            .flatMap { matches ->
-                Flux.fromIterable(matches)
-                    .publishOn(Schedulers.boundedElastic())
-                    .filter { matchId -> !matchRepository.isMatchInTable(matchId) }
-                    .publishOn(Schedulers.boundedElastic())
-                    .flatMap { matchId ->
-                        logger.info("Inserting match: $matchId")
-                        getMatch(matchId)
-                            .publishOn(Schedulers.boundedElastic())
-                            .doOnNext {
-                                matchRepository.insertMatch(matchId, accountService.getAccount().puuid, it)
-                                logger.info(it.toString())
-                            }
-                            .thenReturn(matchId)
-                    }
-                    .collectList()
-        }
+        val matches =
+            europeApiWebClient.get()
+                .uri { it.buildMatchUri(matchQueryParameters) }
+                .retrieve()
+                .bodyToMono(object : ParameterizedTypeReference<List<String>>() {})
+                .flatMapMany { Flux.fromIterable(it) }
+                .collectList()
+                .flatMap { matches ->
+                    Flux.fromIterable(matches)
+                        .publishOn(Schedulers.boundedElastic())
+                        .filter { matchId -> !matchRepository.isMatchInTable(matchId) }
+                        .publishOn(Schedulers.boundedElastic())
+                        .flatMap { matchId ->
+                            logger.info("Inserting match: $matchId")
+                            getMatch(matchId)
+                                .publishOn(Schedulers.boundedElastic())
+                                .doOnNext {
+                                    matchRepository.insertMatch(matchId, accountService.getAccount().puuid, it)
+                                    logger.info(it.toString())
+                                }
+                                .thenReturn(matchId)
+                        }
+                        .collectList()
+                }
 
         return matches
     }
@@ -64,18 +65,18 @@ class MatchService(
             .retrieve()
             .bodyToMono(Match::class.java)
 
-    private fun UriBuilder.buildMatchUri(
-        matchQueryParameters: MatchQueryParameters
-    ) = path("/lol/match/v5/matches/by-puuid/${accountService.getAccount().puuid}/ids")
-        .setMatchQueryParameters(matchQueryParameters)
-        .build()
+    private fun UriBuilder.buildMatchUri(matchQueryParameters: MatchQueryParameters) =
+        path("/lol/match/v5/matches/by-puuid/${accountService.getAccount().puuid}/ids")
+            .setMatchQueryParameters(matchQueryParameters)
+            .build()
 
-    fun UriBuilder.setMatchQueryParameters(matchQueryParameters: MatchQueryParameters) = apply {
-        matchQueryParameters.startTime?.let { queryParam("startTime", it) }
-        matchQueryParameters.endTime?.let { queryParam("endTime", it) }
-        matchQueryParameters.queue?.let { queryParam("queue", it) }
-        matchQueryParameters.type?.let { queryParam("type", it) }
-        queryParam("start", matchQueryParameters.start)
-        queryParam("count", matchQueryParameters.count)
-    }
+    fun UriBuilder.setMatchQueryParameters(matchQueryParameters: MatchQueryParameters) =
+        apply {
+            matchQueryParameters.startTime?.let { queryParam("startTime", it) }
+            matchQueryParameters.endTime?.let { queryParam("endTime", it) }
+            matchQueryParameters.queue?.let { queryParam("queue", it) }
+            matchQueryParameters.type?.let { queryParam("type", it) }
+            queryParam("start", matchQueryParameters.start)
+            queryParam("count", matchQueryParameters.count)
+        }
 }
