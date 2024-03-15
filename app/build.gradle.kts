@@ -49,6 +49,8 @@ dependencies {
 
     implementation(kotlin("reflect"))
 
+    implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.4.0")
+
     testImplementation("org.springframework.boot:spring-boot-starter-test")
 }
 

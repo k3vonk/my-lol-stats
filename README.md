@@ -17,7 +17,14 @@ RIOT_APIKEY="Your development API key"
 ## Sample endpoint execution
 
 ```bash
- curl -X GET --location "http://localhost:8080/summoner/YakumoUchiha/EUW"
+# Open API Spec - Swagger UI
+curl -X GET --location "http://localhost:8080/swagger-ui"
+
+# Open API Spec - YAML
+curl -X GET --location "http://localhost:8080/api-docs"
+
+
+curl -X GET --location "http://localhost:8080/api/v1/account/YakumoUchiha/EUW"
 ```
 
 ## TODO
@@ -27,7 +34,6 @@ RIOT_APIKEY="Your development API key"
 - Get champion played count
 - Match up comparisons
 - Default summoner?
-- Generate OpenAPI spec
-- Validate API spec
+- Advanced OpenApi Spec
 - Do some data storage? so we prevent long listed API calls
 - Visualization?
