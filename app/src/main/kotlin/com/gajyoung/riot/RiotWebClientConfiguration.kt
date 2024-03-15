@@ -3,6 +3,8 @@ package com.gajyoung.riot
 import kotlinx.serialization.json.Json
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.http.HttpHeaders
+import org.springframework.http.MediaType
 import org.springframework.http.codec.ClientCodecConfigurer
 import org.springframework.http.codec.json.KotlinSerializationJsonDecoder
 import org.springframework.web.reactive.function.client.WebClient
@@ -24,6 +26,7 @@ class RiotWebClientConfiguration(val riotProperties: RiotProperties) {
     private fun generateRiotWebClient(baseUrl: String) = WebClient.builder()
         .baseUrl(baseUrl)
         .defaultHeader(X_RIOT_TOKEN, riotProperties.apiKey)
+        .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
         .codecs { it.kotlinSerializationJsonDecoderSetup() }
         .build()
 

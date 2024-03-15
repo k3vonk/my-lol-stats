@@ -32,7 +32,7 @@ class AccountService(
     fun getAccount() = currentAccount
 
     override fun onApplicationEvent(event: ApplicationReadyEvent) {
-        riotAccountApi.getAccount(DEFAULT_GAME_NAME, DEFAULT_TAG_LINE)
+        riotAccountApi.getAccountByRiotId(DEFAULT_GAME_NAME, DEFAULT_TAG_LINE)
             .doOnNext {
                 setAccount(it)
                 logger.info("Initializing default user: $DEFAULT_GAME_NAME#$DEFAULT_TAG_LINE")
@@ -45,7 +45,7 @@ class AccountService(
             .takeIf { it.gameName == gameName && it.tagLine == tagLine }
             ?.let { return it }
 
-        return riotAccountApi.getAccount(gameName, tagLine)
+        return riotAccountApi.getAccountByRiotId(gameName, tagLine)
                 .block()
                 ?.also {
                     riotAccountRepository.saveRiotAccount(it.toRiotAccountRecord())
