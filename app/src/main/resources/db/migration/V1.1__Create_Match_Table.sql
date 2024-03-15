@@ -1,6 +1,5 @@
 CREATE TABLE Match (
-    match_id VARCHAR(255) PRIMARY KEY,
-    puuid VARCHAR(255) REFERENCES RiotAccount(puuid)
+    match_id VARCHAR(255) PRIMARY KEY
 );
 
 CREATE TABLE Metadata (

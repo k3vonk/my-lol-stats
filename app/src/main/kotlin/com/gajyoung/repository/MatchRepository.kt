@@ -6,7 +6,6 @@ import org.jooq.DSLContext
 import org.jooq.generated.Tables.INFO
 import org.jooq.generated.Tables.MATCH
 import org.jooq.generated.Tables.METADATA
-import org.jooq.generated.tables.records.MatchRecord
 import org.jooq.generated.tables.records.ParticipantRecord
 import org.springframework.stereotype.Repository
 import org.springframework.transaction.annotation.Transactional
@@ -22,11 +21,10 @@ class MatchRepository(private val dslContext: DSLContext) {
 
     fun insertMatch(
         matchId: String,
-        puuid: String,
         match: Match,
     ) {
         dslContext.insertInto(MATCH)
-            .set(MatchRecord(matchId, puuid))
+            .set(MATCH.MATCH_ID, matchId)
             .execute()
 
         val metadata = dslContext.newRecord(METADATA, match.metadata)

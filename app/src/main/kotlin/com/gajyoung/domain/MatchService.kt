@@ -19,25 +19,21 @@ class MatchService(
     private val logger = LoggerFactory.getLogger(javaClass)
 
     fun getMatches(queryParameters: MultiValueMap<String, String>): Flux<Match> {
-        val puuid = accountService.getPuiid()
-        return leagueMatchApi.getMatchIds(puuid, queryParameters)
+        return leagueMatchApi.getMatchIds(accountService.getPuiid(), queryParameters)
             .flatMapMany { Flux.fromIterable(it) }
             .publishOn(Schedulers.boundedElastic()) // Reactive Jooq?
             .filter { matchId -> !matchRepository.isMatchInTable(matchId) }
             .flatMap { matchId ->
-                getMatch(matchId, puuid)
+                getMatch(matchId)
             }
     }
 
-    private fun getMatch(
-        matchId: String,
-        puuid: String,
-    ): Mono<Match> {
+    private fun getMatch(matchId: String): Mono<Match> {
         logger.info("Inserting match: $matchId")
         return leagueMatchApi.getMatch(matchId)
             .publishOn(Schedulers.boundedElastic())
             .doOnNext {
-                matchRepository.insertMatch(matchId, puuid, it)
+                matchRepository.insertMatch(matchId, it)
             }
     }
 }
