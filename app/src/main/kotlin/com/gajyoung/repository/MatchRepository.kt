@@ -116,6 +116,7 @@ class MatchRepository(private val dslContext: DSLContext) {
             teamId,
             teamPosition,
             timePlayed,
+            win,
         )
 
     private fun InfoRecord.toDataClass(participants: List<Participant>) =

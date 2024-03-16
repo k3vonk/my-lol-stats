@@ -1,6 +1,9 @@
 package com.gajyoung.domain
 
+import com.gajyoung.domain.stats.ChampionStats
 import com.gajyoung.repository.MatchRepository
+import com.gajyoung.riot.dto.Match
+import com.gajyoung.riot.dto.Participant
 import org.springframework.stereotype.Service
 
 @Service
@@ -8,12 +11,27 @@ class StatService(
     val accountService: AccountService,
     val matchRepository: MatchRepository,
 ) {
-    fun getChampionStats(): Map<String, Int> {
-        val matches = matchRepository.getMatches(accountService.getPuiid())
+    fun getChampionStats(): List<ChampionStats> {
+        val puuid = accountService.getPuiid()
+        val matches = matchRepository.getMatches(puuid)
 
-        return matches.flatMap { match ->
-                match.info.participants.filter { it.puuid == accountService.getPuiid() }
-            }.groupingBy { it.championName }
-                .eachCount()
+        return matches.flatMap { match -> match.participantsWithPuuid(puuid) }
+            .groupBy { it.championName }
+            .map { (championName, participants) ->
+                participants.setupChampionStats(championName)
+            }
+            .sortedByDescending { it.wins }
     }
+
+    private fun List<Participant>.setupChampionStats(
+        championName: String,
+    ) = ChampionStats(
+        championName = championName,
+        wins = count { it.win },
+        loses = size - count { it.win },
+        played = size,
+    )
+
+    private fun Match.participantsWithPuuid(puuid: String) =
+        info.participants.filter { it.puuid == puuid }
 }

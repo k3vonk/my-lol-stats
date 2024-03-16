@@ -18,7 +18,7 @@ RIOT_APIKEY="Your development API key"
 
 ```bash
 # Open API Spec - Swagger UI
-curl -X GET --location "http://localhost:8080/swagger-ui"
+curl -X GET --location "http://localhost:8080/swagger"
 
 # Open API Spec - YAML
 curl -X GET --location "http://localhost:8080/api-docs"

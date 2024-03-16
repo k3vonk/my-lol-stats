@@ -39,6 +39,7 @@ CREATE TABLE Participant (
     team_id INTEGER,
     team_position VARCHAR(255),
     time_played INTEGER,
+    win BOOLEAN,
     PRIMARY KEY (match_id, puuid),
     FOREIGN KEY (match_id) REFERENCES Info(match_id)
 )

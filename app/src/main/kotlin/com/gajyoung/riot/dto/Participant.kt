@@ -15,4 +15,5 @@ data class Participant(
     val teamId: Int,
     val teamPosition: String,
     val timePlayed: Int,
+    val win: Boolean,
 )
