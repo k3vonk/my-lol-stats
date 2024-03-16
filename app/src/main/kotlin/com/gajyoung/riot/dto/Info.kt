@@ -17,5 +17,5 @@ data class Info(
     val participants: List<Participant>,
     val platformId: String,
     val queueId: Int,
-    val teams: List<Team>,
+//    val teams: List<Team>,
 )

@@ -17,7 +17,12 @@ class LolMatchController(
     @GetMapping
     fun getMatches(
         @RequestParam queryParameters: MultiValueMap<String, String>,
-    ) = matchService.getMatches(queryParameters)
+    ) = matchService.getMatchesFromDB(queryParameters)
+
+    @GetMapping("/update")
+    fun getMatchesFromRiot(
+        @RequestParam queryParameters: MultiValueMap<String, String>,
+    ) = matchService.fetchMatchesFromRiot(queryParameters)
 
     @GetMapping("/test")
     fun getMatchIds(

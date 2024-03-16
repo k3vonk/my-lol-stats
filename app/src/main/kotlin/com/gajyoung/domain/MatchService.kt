@@ -18,7 +18,10 @@ class MatchService(
 ) {
     private val logger = LoggerFactory.getLogger(javaClass)
 
-    fun getMatches(queryParameters: MultiValueMap<String, String>): Flux<Match> {
+    fun getMatchesFromDB(queryParameters: MultiValueMap<String, String>) =
+        matchRepository.getMatches(accountService.getPuiid(), queryParameters)
+
+    fun fetchMatchesFromRiot(queryParameters: MultiValueMap<String, String>): Flux<Match> {
         return leagueMatchApi.getMatchIds(accountService.getPuiid(), queryParameters)
             .flatMapMany { Flux.fromIterable(it) }
             .publishOn(Schedulers.boundedElastic()) // Reactive Jooq?
