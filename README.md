@@ -24,7 +24,7 @@ curl -X GET --location "http://localhost:8080/swagger-ui"
 curl -X GET --location "http://localhost:8080/api-docs"
 
 
-curl -X GET --location "http://localhost:8080/api/v1/account/YakumoUchiha/EUW"
+curl -X GET --location "http://localhost:8080/api/v1/accounts/YakumoUchiha/EUW"
 ```
 
 ## TODO
