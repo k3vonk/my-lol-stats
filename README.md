@@ -5,6 +5,8 @@ This is a Spring Boot learning project to interact with Riot API in Kotlin.
 ## Prerequisites
 
 - [Generate your own Riot API](https://developer.riotgames.com/)
+- [JDK 21](https://sdkman.io/jdks#tem)
+- Docker runtime e.g. [Docker Desktop](https://www.docker.com/products/docker-desktop/) setup automatically brings a runtime
 
 ## IntelliJ - Getting Started
 
@@ -15,6 +17,8 @@ RIOT_APIKEY="Your development API key"
 2. Run the Spring Boot `Application`
 
 ## Sample endpoint execution
+
+My APIs query parameters use the [Game Constants](https://developer.riotgames.com/docs/lol#working-with-lol-apis_game-constants) from Riot's documentation
 
 ```bash
 # Open API Spec - Swagger UI
@@ -29,9 +33,7 @@ curl -X GET --location "http://localhost:8080/api/v1/accounts/YakumoUchiha/EUW"
 
 ## TODO
 
-- Filter out Aram/Ranked/Normals matches
 - Response status support for different issues
-- Get champion played count
 - Match up comparisons
 - Default summoner?
 - Advanced OpenApi Spec
