@@ -33,6 +33,8 @@ curl -X GET --location "http://localhost:8080/api/v1/accounts/YakumoUchiha/EUW"
 
 ## TODO
 
+- Teams - implementation
+- ChampionStat - Champion played with count (wins/loses)
 - Response status support for different issues
 - Match up comparisons
 - Default summoner?
