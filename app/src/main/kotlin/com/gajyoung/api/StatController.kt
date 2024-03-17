@@ -1,8 +1,10 @@
 package com.gajyoung.api
 
 import com.gajyoung.domain.StatService
+import org.springframework.util.MultiValueMap
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
@@ -11,5 +13,7 @@ class StatController(
     private val statService: StatService,
 ) {
     @GetMapping("/champions")
-    fun getChampionStats() = statService.getChampionStats()
+    fun getChampionStats(
+        @RequestParam queryParameters: MultiValueMap<String, String>,
+    ) = statService.getChampionStats(queryParameters)
 }

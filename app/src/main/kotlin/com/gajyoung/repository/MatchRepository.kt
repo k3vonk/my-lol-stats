@@ -4,6 +4,7 @@ import com.gajyoung.riot.dto.Info
 import com.gajyoung.riot.dto.Match
 import com.gajyoung.riot.dto.Metadata
 import com.gajyoung.riot.dto.Participant
+import org.jooq.Condition
 import org.jooq.DSLContext
 import org.jooq.Record
 import org.jooq.SelectConditionStep
@@ -37,19 +38,17 @@ class MatchRepository(private val dslContext: DSLContext) {
         insertParticipants(match.info.participants, matchId)
     }
 
-    fun getMatches(puuid: String): MutableList<Match> = getMatches(puuid, null)
-
     fun getMatches(
         puuid: String,
-        queryParameters: MultiValueMap<String, String>?,
+        queryParameters: MultiValueMap<String, String>,
     ): MutableList<Match> {
+        val condition = PARTICIPANT.PUUID.eq(puuid).andQueueIdIfPresent(queryParameters)
         return dslContext.select(asterisk())
             .from(METADATA)
             .join(INFO).on(INFO.MATCH_ID.eq(METADATA.MATCH_ID))
             .join(PARTICIPANT).on(PARTICIPANT.MATCH_ID.eq(METADATA.MATCH_ID))
-            .where(PARTICIPANT.PUUID.eq(puuid)).apply {
-                setSearchQueries(queryParameters)
-            }
+            .where(condition)
+            .apply { setSearchQueries(queryParameters) }
             .fetch {
                 val metadata = it.into(METADATA).into(Metadata::class.java)
                 val participants = getParticipants(metadata.matchId)
@@ -95,8 +94,13 @@ class MatchRepository(private val dslContext: DSLContext) {
             .where(PARTICIPANT.MATCH_ID.eq(matchId))
             .fetchInto(Participant::class.java)
 
-    private fun SelectConditionStep<Record>.setSearchQueries(queryParameters: MultiValueMap<String, String>?) {
-        queryParameters?.let { m ->
+    private fun Condition.andQueueIdIfPresent(queryParameters: MultiValueMap<String, String>) =
+        queryParameters["queue"]?.firstOrNull()?.toIntOrNull()?.let { queueId ->
+            this.and(INFO.QUEUE_ID.eq(queueId))
+        } ?: this
+
+    private fun SelectConditionStep<Record>.setSearchQueries(queryParameters: MultiValueMap<String, String>) {
+        queryParameters.let { m ->
             m["count"]?.firstOrNull()?.toInt().let { limit(it) }
             m["start"]?.firstOrNull()?.toInt().let { offset(it) }
         }
